@@ -1,0 +1,24 @@
+{
+  "name": "ds",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "set IS_LOCAL=true & npx serverless offline",
+    "deploy": "npx serverless deploy"
+  },
+  "dependencies": {
+    "aws-lambda": "^1.0.5",
+    "aws-sdk": "^2.629.0",
+    "fs": "0.0.1-security",
+    "uuid": "^7.0.1",
+    "yaml": "^1.7.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.45",
+    "@types/serverless": "^1.18.5",
+    "@types/yaml": "^1.2.0",
+    "serverless-offline": "^6.0.0-alpha.67",
+    "serverless-openapi-documentation": "^0.4.0",
+    "serverless-plugin-typescript": "^1.1.9",
+    "typescript": "^3.8.3"
+  }
+}

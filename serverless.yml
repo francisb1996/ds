@@ -1,0 +1,96 @@
+service: ds
+
+custom:
+  queueName: DSTest.fifo
+  documentation:
+    version: '1'
+    title: 'DS'
+    description: 'DS'
+    models:
+      - name: "TransactionRequest"
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-openapi-documentation
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - lambda:InvokeFunction
+        - lambda:InvokeAsync
+      Resource: "*"
+    - Effect: Allow
+      Action:
+        - sqs:SendMessage
+      Resource:
+        Fn::GetAtt: [ SQSQueue, Arn ]
+
+functions:
+  # REST API
+  authenticate:
+    handler: api.authenticate
+    events:
+      - http:
+          path: authenticate
+          method: post
+          cors: true
+          documentation:
+            summary: "authenticate"
+
+  submit-transaction:
+    handler: api.submitTransaction
+    events:
+      - http:
+          path: api/v1/{tenant}
+          method: post
+          cors: true
+
+  get-transaction-by-resource-id:
+    handler: api.getTransaction
+    events:
+      - http:
+          path: api/v1/{tenant}/{resourceID}
+          method: get
+          cors: true
+          
+  # Internal
+  execute-transaction:
+    handler: execute-transaction.executeTransaction
+
+  save-transaction:
+    handler: data.saveTransaction
+
+  get-transaction:
+    handler: data.getTransaction
+
+  update-transaction:
+    handler: data.updateTransaction
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt: [ SQSQueue, Arn ]
+
+  pm-proxy:
+    handler: proxy/pm.handler
+    environment:
+      SQS_URL:
+        Ref: SQSQueue
+
+  rxrules-proxy:
+    handler: proxy/rxrules.handler
+
+  dhd-proxy:
+    handler: proxy/dhd.handler
+
+resources:
+  Resources:
+    SQSQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        FifoQueue: true
+        ContentBasedDeduplication: true
+        QueueName: ${self:custom.queueName}

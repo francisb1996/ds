@@ -1,0 +1,14 @@
+openapi: 3.0.0
+components:
+  schemas: {}
+  securitySchemes: {}
+info:
+  title: DS
+  description: DS
+  version: '1'
+paths:
+  /authenticate:
+    post:
+      operationId: authenticate
+      summary: authenticate
+      responses: {}
