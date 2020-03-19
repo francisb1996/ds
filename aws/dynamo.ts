@@ -1,17 +1,22 @@
-import ProductResponse from '../domain/ProductResponse';
-import { v4 } from 'uuid'
 import TransactionData from '../domain/TransactionData';
+import { DynamoDB } from 'aws-sdk';
 
-export const save = async (request) => {
+const dynamoDb = new DynamoDB.DocumentClient()
+const { TABLE_NAME } = process.env
+
+export async function save(data: TransactionData) {
     console.log('saved to dynamo')
-    return v4()
+    await dynamoDb.put({
+        TableName: TABLE_NAME,
+        Item: data
+    }).promise()
 };
 
-export const get = async (resouceID: string): Promise<TransactionData> => {
+export async function get(resourceID: string): Promise<TransactionData> {
     console.log('getting from dynamo')
-    return new TransactionData(resouceID)
-};
-
-export const update = async (product: ProductResponse) => {
-    console.log('updating dynamo record')
+    const response =  await dynamoDb.get({
+        TableName: TABLE_NAME,
+        Key: { resourceID }
+    }).promise()
+    return response.Item as TransactionData
 };

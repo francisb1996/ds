@@ -1,7 +1,9 @@
 service: ds
 
 custom:
-  queueName: DSTest.fifo
+  tableName: ds-data
+  queueName: dstest.fifo
+  bucketName: bucket031620
   documentation:
     version: '1'
     title: 'DS'
@@ -17,17 +19,22 @@ plugins:
 provider:
   name: aws
   runtime: nodejs12.x
+  environment:
+    TABLE_NAME: ${self:custom.tableName}
+    BUCKET_NAME: ${self:custom.bucketName}
+    SQS_URL:
+      Ref: SQSQueue
   iamRoleStatements:
     - Effect: Allow
       Action:
         - lambda:InvokeFunction
         - lambda:InvokeAsync
-      Resource: "*"
-    - Effect: Allow
-      Action:
+        - dynamodb:PutItem
+        - dynamodb:GetItem
+        - s3:putObject
+        - s3:getObject
         - sqs:SendMessage
-      Resource:
-        Fn::GetAtt: [ SQSQueue, Arn ]
+      Resource: "*"
 
 functions:
   # REST API
@@ -60,6 +67,7 @@ functions:
   # Internal
   execute-transaction:
     handler: execute-transaction.executeTransaction
+    timeout: 30
 
   save-transaction:
     handler: data.saveTransaction
@@ -76,9 +84,6 @@ functions:
 
   pm-proxy:
     handler: proxy/pm.handler
-    environment:
-      SQS_URL:
-        Ref: SQSQueue
 
   rxrules-proxy:
     handler: proxy/rxrules.handler
@@ -88,6 +93,23 @@ functions:
 
 resources:
   Resources:
+    S3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.bucketName}
+    DynamoTable: 
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: resourceID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: resourceID
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
     SQSQueue:
       Type: "AWS::SQS::Queue"
       Properties:

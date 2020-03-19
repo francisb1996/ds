@@ -1,11 +1,12 @@
 import TransactionRequest from "./TransactionRequest"
-import Evidence from "./Evidence"
+import ProductResponse from "./ProductResponse"
 
 export default class S3Record {
-    products: Evidence[]
+    products: ProductResponse[]
     request: TransactionRequest
 
-    constructor(products: Evidence[]) {
-        this.products = products
+    constructor(request: TransactionRequest) {
+        this.request = request
+        this.products = []
     }
 }

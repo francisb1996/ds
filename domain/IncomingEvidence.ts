@@ -3,7 +3,7 @@ export default class IncomingEvidence {
     format: string
     data: string
 
-    constructor(type, format, data) {
+    constructor(type: string, format: string, data: string) {
         this.type = type
         this.format = format
         this.data = data

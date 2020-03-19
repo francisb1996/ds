@@ -4,10 +4,9 @@ import TransactionRequest from './domain/TransactionRequest'
 import ApiResponse from './domain/ApiResponse'
 import { invoke } from './aws/lambda'
 // TODO:
-// - Determine product execution order
-// - Setup serverless-offline-sqs
-// - Handle async product proxies
 // - Actual Dynamo/S3 integration
+// - Real product proxies
+// - eslint
 
 export const authenticate: Handler<APIGatewayEvent, ApiResponse<any>> = async (event: APIGatewayEvent) => {
     console.log('api: auth invoked!')
@@ -21,7 +20,7 @@ export const submitTransaction: Handler<APIGatewayEvent, ApiResponse<Transaction
     console.log('api: POST invoked', request)
     const saveResponse = await invoke('save-transaction', request)
     const transaction = JSON.parse(saveResponse) as TransactionResponse
-    invoke('execute-transaction', { ...request, resourceID: transaction.resourceID })
+    invoke('execute-transaction', { ...request, tenantID: event.pathParameters.tenantID, resourceID: transaction.resourceID })
     return new ApiResponse(201, transaction)
 }
 

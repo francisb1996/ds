@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "scripts": {
     "start": "set IS_LOCAL=true & npx serverless offline",
-    "deploy": "npx serverless deploy"
+    "deploy": "npx serverless deploy",
+    "build": "npx tsc --build tsconfig.json"
   },
   "dependencies": {
     "aws-lambda": "^1.0.5",
@@ -15,6 +16,7 @@
   "devDependencies": {
     "@types/aws-lambda": "^8.10.45",
     "@types/serverless": "^1.18.5",
+    "@types/uuid": "^7.0.0",
     "@types/yaml": "^1.2.0",
     "serverless-offline": "^6.0.0-alpha.67",
     "serverless-openapi-documentation": "^0.4.0",
