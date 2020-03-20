@@ -16,5 +16,7 @@ endpoints:
                     "product": "DHD"
                 }
             ]
+
         }
   GET - <url>/api/v1/{tenant}/{resourceID}
+  GET - <url>/data/{tenant}/{resourceID}

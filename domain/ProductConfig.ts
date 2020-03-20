@@ -1,17 +1,20 @@
 import EvidenceConfig from "./EvidenceConfig"
 
-type ProductDependency = {
+export type FunctionName = 'save-transaction' | 'get-transaction' | 'execute-transaction' | 'update-transaction' |
+                            'rxrules-proxy' | 'pm-proxy' | 'dhd-proxy' | 'get-transaction-data' | 'get-transaction-request'
+
+export type ProductDependency = {
     name: string
     output: string
 }
 
-type ProductOutputConfig = {
+export type ProductOutputConfig = {
     name: string
     format: string
 }
 
 export default class ProductConfig {
-    proxy: string
+    proxy: FunctionName
     tenants: string[]
     output: ProductOutputConfig[]
     dependencies?: ProductDependency[]

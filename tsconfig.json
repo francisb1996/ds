@@ -1,14 +1,17 @@
 {
     "compilerOptions": {
+        "preserveConstEnums": true,
+        "allowJs": true,
+        "lib": ["es2015"],
         "module": "commonjs",
         "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
         "target": "es6",
         "noImplicitAny": true,
         "moduleResolution": "node",
-        "sourceMap": true,
-        "outDir": "dist",
+        "outDir": ".build",
         "baseUrl": ".",
+        "rootDir": "./",
         "paths": {
             "*": [
                 "node_modules/*",
